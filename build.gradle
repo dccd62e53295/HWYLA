@@ -18,7 +18,7 @@ plugins {
 
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-def build_number = 'CUSTOM'
+//def build_number = 'CUSTOM'
 
 if (System.getenv('BUILD_NUMBER') != null)
     build_number = System.getenv('BUILD_NUMBER')
@@ -37,11 +37,12 @@ minecraft {
 }
 
 repositories {
-    maven { url "http://dvs1.progwml6.com/files/maven" }
+    maven { url "https://dvs1.progwml6.com/files/maven" }
 }
 
 dependencies {
-    deobfCompile "mezz.jei:jei_1.12.2:4.7.11.102"
+    //deobfCompile "mezz.jei:jei_1.12.2:4.16.1.302"
+    compileOnly files( "libs/jei_1.12.2-4.16.1.1012-dev.jar" )
 }
 
 processResources{
@@ -76,13 +77,19 @@ task apiJar(type: Jar) {
     from sourceSets.api.allJava
 }
 
+task deobfJar(type: Jar) {
+        from sourceSets.main.output
+        from sourceSets.api.output
+	classifier = 'deobf'
+}
+
 task sourcesJar(type: Jar) {
     classifier = 'sources'
     from sourceSets.main.allJava
     from sourceSets.api.allJava
 }
 
-tasks.build.dependsOn apiJar, sourcesJar
+tasks.build.dependsOn apiJar, sourcesJar, deobfJar
 
 tasks.withType(JavaCompile) { task ->
     task.options.encoding = 'UTF-8'
